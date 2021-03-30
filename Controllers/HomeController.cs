@@ -1,4 +1,5 @@
 ﻿using BowlingLeague.Models;
+using BowlingLeague.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -15,17 +16,37 @@ namespace BowlingLeague.Controllers
         private readonly ILogger<HomeController> _logger;
         private BowlingLeagueContext context { get; set; }
 
+
         public HomeController(ILogger<HomeController> logger, BowlingLeagueContext con)
         {
             _logger = logger;
             context = con;
         }
 
-        public IActionResult Index(long? teamid, string teamname)
+        public IActionResult Index(long? teamid, string teamname, int pageNum = 0)
         {
-            return View(context.Bowlers
-                .FromSqlInterpolated($"SELECT * FROM Bowlers WHERE TeamID = {teamid} OR {teamid} IS NULL")
-                .ToList());
+            int pageSize = 5;
+
+            return View(new IndexViewModel
+            {
+                Bowlers = (context.Bowlers
+                    .Where(x => x.TeamId == teamid || teamid == null)
+                    .OrderBy(x => x.BowlerLastName)
+                    .Skip((pageNum - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList()),
+
+                PageNumberingInfo = new PageNumberingInfo
+                {
+                    NumItemsPerPage = pageSize,
+                    CurrentPage = pageNum,
+                    //If no team selected, get full count. Otheriwise, get count of selected team
+                    TotalNumItems = (teamid == null ? context.Bowlers.Count() :
+                    context.Bowlers.Where(x => x.TeamId == teamid).Count())
+                },
+
+                TeamName = teamname
+            });
         }
 
         public IActionResult Privacy()
