@@ -21,18 +21,22 @@ namespace BowlingLeague.Infrastructure
         }
 
         public PageNumberingInfo PageInfo { get; set; }
-        //public string TeamName { get; set; }
+
+        //Stores info for pages
         [HtmlAttributeName(DictionaryAttributePrefix = "page-url-")]
         public Dictionary<string, object> KeyValuePairs { get; set; } = new Dictionary<string, object>();
 
         [HtmlAttributeNotBound]
         [ViewContext]
         public ViewContext ViewContext { get; set; }
-        //public bool SetUpCorrectly { get; set; }
+
+        //Attributes for tag class features
         public bool PageClassesEnabled { get; set; } = false;
         public string PageClass { get; set; }
         public string PageClassNormal { get; set; }
         public string PageClassSelected { get; set; }
+
+        //Creates page links for bowlers. 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             IUrlHelper urlHelp = urlInfo.GetUrlHelper(ViewContext);
@@ -43,6 +47,8 @@ namespace BowlingLeague.Infrastructure
                 TagBuilder individualTag = new TagBuilder("a");
                 KeyValuePairs["pageNum"] = i;
                 individualTag.Attributes["href"] = urlHelp.Action("Index", KeyValuePairs);
+
+                //Helps to highlight the selected pages
                 if (PageClassesEnabled)
                 {
                     individualTag.AddCssClass(PageClass);

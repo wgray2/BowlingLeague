@@ -1,8 +1,11 @@
 ﻿@model IEnumerable<Team>
 
+<!--Buttons for the teams and implements highlighting of selected team page-->
+
 <h5>Teams</h5>
 <a class="@((string)ViewContext.RouteData.Values["teamname"] == null ? "btn btn-secondary" : "btn btn-outline-info")" asp-action="Index" asp-controller="Home" asp-route-teamid="">Home</a>
 <br />
+
 @foreach (var x in Model)
 {
     <a class="@((string)ViewContext.RouteData.Values["teamname"] == x.TeamName ? "btn btn-secondary" : "btn btn-outline-info")"

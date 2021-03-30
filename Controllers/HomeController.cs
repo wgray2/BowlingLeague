@@ -29,13 +29,14 @@ namespace BowlingLeague.Controllers
 
             return View(new IndexViewModel
             {
+                //List the bowlers with selected number of bowlers per page 
                 Bowlers = (context.Bowlers
                     .Where(x => x.TeamId == teamid || teamid == null)
                     .OrderBy(x => x.BowlerLastName)
                     .Skip((pageNum - 1) * pageSize)
                     .Take(pageSize)
                     .ToList()),
-
+                //Set the info needed for PageInfo viewmodel
                 PageNumberingInfo = new PageNumberingInfo
                 {
                     NumItemsPerPage = pageSize,
